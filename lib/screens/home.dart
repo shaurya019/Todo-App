@@ -12,6 +12,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final todosList = ToDo.todoList();
+  final _todoController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,8 +44,8 @@ class _HomeState extends State<Home> {
                 for (ToDo todoo in todosList)
                   ToDoItem(
                     todo: todoo,
-                    onToDoChanged: null,
-                    onDeleteItem: null,
+                    onToDoChanged: _handleToDoChange,
+                    onDeleteItem: _deleteToDoItem,
                   ),
               ],
             ),
@@ -79,7 +80,7 @@ class _HomeState extends State<Home> {
     borderRadius: BorderRadius.circular(10),
     ),
     child: TextField(
-    // controller: _todoController,
+    controller: _todoController,
     decoration: InputDecoration(
     hintText: 'Add a new todo item',
     border: InputBorder.none),
@@ -99,7 +100,7 @@ class _HomeState extends State<Home> {
             ),
           ),
           onPressed: () {
-            // _addToDoItem(_todoController.text);
+            _addToDoItem(_todoController.text);
           },
           style: ElevatedButton.styleFrom(
             primary: tdBlue,
@@ -114,6 +115,34 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+  void _handleToDoChange(ToDo todo) {
+    setState(() {
+      todo.isDone = !todo.isDone;
+    });
+  }
+
+  void _deleteToDoItem(String id) {
+    setState(() {
+      todosList.removeWhere((item) => item.id == id);
+    });
+  }
+
+  void _addToDoItem(String toDo) {
+    setState((){
+      todosList.add(ToDo(id:DateTime.now().millisecondsSinceEpoch.toString(),todoText:toDo,
+      ));
+    });
+    _todoController.clear();
+  }
+
+  void _runFilter(String enteredKeyword) {
+
+  }
+
+
+
+
 
   Widget searchBox() {
     return Container(
@@ -157,13 +186,13 @@ class _HomeState extends State<Home> {
             color: Colors.black,
             size: 30,
           ),
-          Container(
-            height: 40,
-            width: 40,
-            child: ClipRect(
-              child: Image.network('https://images.saymedia-content.com/.image/t_share/MTc0NDc1NTEyNDkwNTY3MzAy/an-interview-from-beyond-with-albert-einstein.jpg'),
-            ),
-          ),
+          // Container(
+          //   height: 40,
+          //   width: 40,
+          //   child: ClipRect(
+          //     child: Image.network('https://images.saymedia-content.com/.image/t_share/MTc0NDc1NTEyNDkwNTY3MzAy/an-interview-from-beyond-with-albert-einstein.jpg'),
+          //   ),
+          // ),
         ],
       ),
     );
